@@ -1,0 +1,29 @@
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+
+db = SQLAlchemy()
+
+def create_app():
+    app = Flask(__name__)
+    
+    # Secret key for security
+    app.config['SECRET_KEY'] = 'neelkantha-secret-key-999'
+    # Database location
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+    
+    db.init_app(app)
+    
+    login_manager = LoginManager()
+    login_manager.login_view = 'main.login'
+    login_manager.init_app(app)
+    
+    from .models import User
+    @login_manager.user_loader
+    def load_user(id):
+        return User.query.get(int(id))
+        
+    from .routes import main
+    app.register_blueprint(main)
+    
+    return app
