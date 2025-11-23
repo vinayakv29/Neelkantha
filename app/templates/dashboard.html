@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between mb-4">
+    <h3>Namaste, {{ user.username }}</h3>
+    <a href="/logout" class="btn btn-outline-danger">Logout</a>
+</div>
+
+{% if message %}
+<div class="alert alert-success animate__animated animate__fadeIn text-center">
+    <strong>{{ message }}</strong>
+</div>
+{% endif %}
+
+<div class="card shadow-lg border-0 mb-4 text-white" style="background: linear-gradient(135deg, #000428 0%, #004e92 100%);">
+    <div class="card-body text-center py-5">
+        <h2 class="text-uppercase">Consciousness Level {{ user.pet_level }}</h2>
+        
+        <div class="animate__animated animate__pulse animate__infinite" style="font-size: 100px;">
+            {% if user.pet_health < 30 %} 🌪️ {% elif user.pet_level == 1 %} 🕯️ {% elif user.pet_level == 2 %} 🌿 {% elif user.pet_level == 3 %} 🪷 {% elif user.pet_level >= 4 %} ☀️ {% endif %}
+        </div>
+
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6">
+                <label>Prana (Energy) - {{ user.pet_health }}%</label>
+                <div class="progress mb-3" style="height: 25px; border-radius: 15px;">
+                    <div class="progress-bar bg-info" style="width: {{ user.pet_health }}%;"></div>
+                </div>
+                
+                <label>Karma (Progress)</label>
+                <div class="progress" style="height: 15px; border-radius: 15px;">
+                    <div class="progress-bar bg-warning" style="width: {{ (user.pet_xp / (user.pet_level * 50)) * 100 }}%;"></div>
+                </div>
+            </div>
+        </div>
+
+        {% if user.pet_health < 50 %}
+        <div class="mt-4 p-3 bg-light bg-opacity-10 rounded border border-light">
+            <h5>⚠️ Your Prana is low.</h5>
+            <p>Perform 2 minutes of Pranayama (Deep Breathing) to restore balance.</p>
+            <form method="POST">
+                <input type="hidden" name="heal_action" value="true">
+                <button class="btn btn-light text-primary fw-bold">I have completed Pranayama</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <strong>Reflect on your day</strong>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Mental State (1-10)</label>
+                    <input type="number" name="score" min="1" max="10" class="form-control" required>
+                </div>
+                <div class="col-md-8">
+                    <label>Journal Entry</label>
+                    <input type="text" name="note" class="form-control" placeholder="What are your thoughts?">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-3">Log Reflection</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
